@@ -96,7 +96,7 @@
   .btn-ghost{ background: transparent; color:#fff; border: 1.5px solid rgba(255,255,255,0.5); }
   .btn-ghost:hover{ background: rgba(255,255,255,0.12); }
 
-  /* ---------- icon system (consistent 1.6px stroke, rounded) ---------- */
+  /* ---------- icon system ---------- */
   .icon{ display:block; }
 
   /* ---------- nav ---------- */
@@ -171,6 +171,7 @@
     align-items:center;
     gap:8px;
     cursor:pointer;
+    text-decoration:none;
   }
   .role-btn:hover{ background: rgba(255,255,255,0.16); }
   .role-menu{
@@ -185,6 +186,7 @@
     display: none;
     flex-direction: column;
     gap: 1px;
+    z-index: 100;
   }
   .role-select.open .role-menu{ display:flex; }
   .role-menu a{
@@ -794,7 +796,6 @@
     .reviews-grid{ grid-template-columns: 1fr; }
   }
 
-
   .fairness{
     background: var(--soil);
     color: #fff;
@@ -919,35 +920,76 @@
       <a href="{% url 'traceability' %}">Track a crate</a>
     </nav>
     <div class="nav-right">
-      <div class="role-select" id="roleSelect">
-        <button class="role-btn" onclick="document.getElementById('roleSelect').classList.toggle('open')">
-          Log in as
-          <svg class="icon" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <div class="role-menu">
-          <a href="{% url 'login' %}?role=consumer">
-            <span class="icon-chip"><svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 9L6.5 20.5C6.6 21.3 7.3 22 8.2 22H15.8C16.7 22 17.4 21.3 17.5 20.5L19 9" stroke="#4F6F52" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 9V6.5C8 4 9.8 2 12 2C14.2 2 16 4 16 6.5V9" stroke="#4F6F52" stroke-width="1.7" stroke-linecap="round"/></svg></span>
-            Consumer
-          </a>
-          <a href="{% url 'login' %}?role=farmer">
-            <span class="icon-chip"><svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 21C12 21 5 16.6 5 10.6C5 6.9 7.7 4 11 4C12.4 4 13.2 4.7 12 6.9C10.8 4.7 11.6 4 13 4C16.3 4 19 6.9 19 10.6C19 16.6 12 21 12 21Z" stroke="#4F6F52" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-            Farmer / FPO
-          </a>
-          <a href="{% url 'login' %}?role=bulk">
-            <span class="icon-chip"><svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M3 8L12 4L21 8L12 12L3 8Z" stroke="#4F6F52" stroke-width="1.7" stroke-linejoin="round"/><path d="M3 8V16L12 20L21 16V8" stroke="#4F6F52" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 12V20" stroke="#4F6F52" stroke-width="1.7"/></svg></span>
-            Bulk buyer
-          </a>
-          <a href="{% url 'login' %}?role=delivery">
-            <span class="icon-chip"><svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M3 7H14V17H3V7Z" stroke="#4F6F52" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 11H18L21 14.5V17H14V11Z" stroke="#4F6F52" stroke-width="1.7" stroke-linejoin="round"/><circle cx="7" cy="19" r="2" stroke="#4F6F52" stroke-width="1.7"/><circle cx="18" cy="19" r="2" stroke="#4F6F52" stroke-width="1.7"/></svg></span>
-            Delivery partner
-          </a>
-          <a href="{% url 'login' %}?role=admin">
-            <span class="icon-chip"><svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="#4F6F52" stroke-width="1.7"/><path d="M19.4 15A1.65 1.65 0 0 0 20.7 13.4 1.65 1.65 0 0 0 19.4 11.8 1.65 1.65 0 0 1 18.1 9.4 1.65 1.65 0 0 1 19.8 8 1.65 1.65 0 0 0 19.8 5.2 1.65 1.65 0 0 0 17 5.2 1.65 1.65 0 0 1 14.6 3.9 1.65 1.65 0 0 1 13.2 2.6 1.65 1.65 0 0 0 10.8 2.6 1.65 1.65 0 0 1 9.4 3.9 1.65 1.65 0 0 1 7 5.2 1.65 1.65 0 0 0 4.2 5.2 1.65 1.65 0 0 0 4.2 8 1.65 1.65 0 0 1 5.9 9.4 1.65 1.65 0 0 1 4.6 11.8 1.65 1.65 0 0 0 4.6 13.4 1.65 1.65 0 0 0 4.6 13.4" stroke="#4F6F52" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            Admin
-          </a>
+      {% if current_account %}
+        <div class="role-select" id="accountSelect">
+          <button class="role-btn" onclick="document.getElementById('accountSelect').classList.toggle('open')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            {{ current_account_name|default:current_account.email }}
+            <svg class="icon" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="role-menu">
+            {% if current_account.role == 'farmer' %}
+              <a href="{% url 'farmer_dashboard' %}">
+                <span class="icon-chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4F6F52" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-6 3 3 5-8"/></svg></span>
+                Farmer Dashboard
+              </a>
+            {% elif current_account.role == 'admin' %}
+              <a href="{% url 'admin_dashboard' %}">
+                <span class="icon-chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4F6F52" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span>
+                Admin Dashboard
+              </a>
+            {% elif current_account.role == 'delivery' %}
+              <a href="{% url 'delivery_dashboard' %}">
+                <span class="icon-chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4F6F52" stroke-width="2"><path d="M3 7H14V17H3V7Z"/><path d="M14 11H18L21 14.5V17H14V11Z"/><circle cx="7" cy="19" r="2"/><circle cx="18" cy="19" r="2"/></svg></span>
+                Delivery Dashboard
+              </a>
+            {% else %}
+              <a href="{% url 'marketplace' %}">
+                <span class="icon-chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4F6F52" stroke-width="2"><path d="M5 9L6.5 20.5C6.6 21.3 7.3 22 8.2 22H15.8C16.7 22 17.4 21.3 17.5 20.5L19 9"/><path d="M8 9V6.5C8 4 9.8 2 12 2C14.2 2 16 4 16 6.5V9"/></svg></span>
+                Marketplace
+              </a>
+            {% endif %}
+            <a href="{% url 'profile' %}">
+              <span class="icon-chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4F6F52" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+              My Profile
+            </a>
+            <a href="{% url 'logout' %}" style="color:var(--clay);">
+              <span class="icon-chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#A65D3F" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span>
+              Log out
+            </a>
+          </div>
         </div>
-      </div>
-      <button class="nav-toggle" aria-label="Open menu">
+      {% else %}
+        <div class="role-select" id="roleSelect">
+          <button class="role-btn" onclick="document.getElementById('roleSelect').classList.toggle('open')">
+            Log in as
+            <svg class="icon" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="role-menu">
+            <a href="{% url 'login' %}?role=consumer">
+              <span class="icon-chip"><svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 9L6.5 20.5C6.6 21.3 7.3 22 8.2 22H15.8C16.7 22 17.4 21.3 17.5 20.5L19 9" stroke="#4F6F52" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 9V6.5C8 4 9.8 2 12 2C14.2 2 16 4 16 6.5V9" stroke="#4F6F52" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+              Consumer
+            </a>
+            <a href="{% url 'login' %}?role=farmer">
+              <span class="icon-chip"><svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 21C12 21 5 16.6 5 10.6C5 6.9 7.7 4 11 4C12.4 4 13.2 4.7 12 6.9C10.8 4.7 11.6 4 13 4C16.3 4 19 6.9 19 10.6C19 16.6 12 21 12 21Z" stroke="#4F6F52" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+              Farmer / FPO
+            </a>
+            <a href="{% url 'login' %}?role=bulk">
+              <span class="icon-chip"><svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M3 8L12 4L21 8L12 12L3 8Z" stroke="#4F6F52" stroke-width="1.7" stroke-linejoin="round"/><path d="M3 8V16L12 20L21 16V8" stroke="#4F6F52" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 12V20" stroke="#4F6F52" stroke-width="1.7"/></svg></span>
+              Bulk buyer
+            </a>
+            <a href="{% url 'login' %}?role=delivery">
+              <span class="icon-chip"><svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M3 7H14V17H3V7Z" stroke="#4F6F52" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 11H18L21 14.5V17H14V11Z" stroke="#4F6F52" stroke-width="1.7" stroke-linejoin="round"/><circle cx="7" cy="19" r="2" stroke="#4F6F52" stroke-width="1.7"/><circle cx="18" cy="19" r="2" stroke="#4F6F52" stroke-width="1.7"/></svg></span>
+              Delivery partner
+            </a>
+            <a href="{% url 'login' %}?role=admin">
+              <span class="icon-chip"><svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="#4F6F52" stroke-width="1.7"/><path d="M19.4 15A1.65 1.65 0 0 0 20.7 13.4 1.65 1.65 0 0 0 19.4 11.8 1.65 1.65 0 0 1 18.1 9.4 1.65 1.65 0 0 1 19.8 8 1.65 1.65 0 0 0 19.8 5.2 1.65 1.65 0 0 0 17 5.2 1.65 1.65 0 0 1 14.6 3.9 1.65 1.65 0 0 1 13.2 2.6 1.65 1.65 0 0 0 10.8 2.6 1.65 1.65 0 0 1 9.4 3.9 1.65 1.65 0 0 1 7 5.2 1.65 1.65 0 0 0 4.2 5.2 1.65 1.65 0 0 0 4.2 8 1.65 1.65 0 0 1 5.9 9.4 1.65 1.65 0 0 1 4.6 11.8 1.65 1.65 0 0 0 4.6 13.4 1.65 1.65 0 0 0 4.6 13.4" stroke="#4F6F52" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              Admin
+            </a>
+          </div>
+        </div>
+      {% endif %}
+      <button class="nav-toggle" aria-label="Open menu" onclick="document.querySelector('.nav-links').style.display = document.querySelector('.nav-links').style.display === 'flex' ? 'none' : 'flex'">
         <svg class="icon" width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M3 6H19M3 11H19M3 16H19" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/></svg>
       </button>
     </div>
@@ -1345,16 +1387,16 @@
         <h4>For farmers</h4>
         <ul>
           <li><a href="{% url 'login' %}?role=farmer">List your crop</a></li>
-          <li><a href="{% url 'farmer_dashboard' %}#earnings">Pricing &amp; payouts</a></li>
+          <li><a href="{% url 'farmer_dashboard' %}">Pricing &amp; payouts</a></li>
           <li><a href="{% url 'login' %}?role=farmer">Join an FPO</a></li>
         </ul>
       </div>
       <div>
         <h4>Company</h4>
         <ul>
-          <li><a href="#">About us</a></li>
-          <li><a href="#">Careers</a></li>
-          <li><a href="#">Contact</a></li>
+          <li><a href="{% url 'home' %}">About us</a></li>
+          <li><a href="{% url 'marketplace' %}">Marketplace</a></li>
+          <li><a href="{% url 'notifications' %}">Notifications</a></li>
         </ul>
       </div>
     </div>
@@ -1368,7 +1410,9 @@
 <script>
   document.addEventListener('click', function(e){
     var sel = document.getElementById('roleSelect');
-    if(!sel.contains(e.target)) sel.classList.remove('open');
+    if(sel && !sel.contains(e.target)) sel.classList.remove('open');
+    var acctSel = document.getElementById('accountSelect');
+    if(acctSel && !acctSel.contains(e.target)) acctSel.classList.remove('open');
   });
 </script>
 
